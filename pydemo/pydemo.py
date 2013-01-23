@@ -1,0 +1,218 @@
+#! /usr/bin/env python
+#-*- coding: utf-8 -*-
+u'''
+Created on Nov 13, 2012
+@author: pev
+'''
+# Std lib imports
+from sys import argv
+from os import path 
+import code
+import atexit
+from optparse import OptionParser
+
+
+FORMATTER_STYLE = 'emacs'
+#===============================================================================
+# TO GET ALL THE AVAILABLE PIGMENTS STYLES:
+# python -c "from pygments.styles import get_all_styles; print list(get_all_styles())"
+#===============================================================================
+RELOAD_FILES_CMD = 'reload_files'
+PRINT_FILES_CMD = 'print_files'
+BLANKS = 1
+
+
+class HistoryConsole(code.InteractiveConsole, object):
+    '''Add history support to code.InteractiveConsole like done in
+    http://docs.python.org/2/library/readline.html?highlight=readline#example
+    '''
+    def __init__(self, histfile=path.expanduser("~/.pydemo_history"), *args, **kargs):
+        super(HistoryConsole, self).__init__(*args, **kargs)
+        self.init_history(histfile)
+
+    def init_history(self, histfile):
+        import readline
+        readline.parse_and_bind("tab: complete")
+        if hasattr(readline, "read_history_file"):
+            try:
+                readline.read_history_file(histfile)
+            except IOError:
+                pass
+            atexit.register(self.save_history, histfile)
+
+    def save_history(self, histfile):
+        import readline
+        readline.write_history_file(histfile)
+
+
+class DemoConsole(code.InteractiveConsole, object):
+    def __init__(self, files=None, blanks=BLANKS, color=True, *args, **kargs):
+        self.color = color
+        if not files:
+            self.files = ["example{0}.py".format(num) for num in xrange(999)]
+        else:
+            self.files = files
+        self.blanks = blanks
+        self.reload_files()
+        super(DemoConsole, self).__init__(*args, **kargs)
+
+    def reload_files(self, new_files=[]):
+        if new_files:
+            self.files = new_files
+        self.code_block = []
+        self.is_executable = False
+        self.blocks = get_code_blocks(self.files, self.blanks)
+        self.blocks_iter = iter(self.blocks)
+        self.write("Loaded {0} files, {1} code blocks\n".format(len(self.files), len(self.blocks)))
+
+    def push(self, line):
+        if not line.strip() and len(self.buffer) == 0:
+            # Accumulate next code blocks until they are executable (and execute them)
+            while True:
+                try:
+                    b = self.blocks_iter.next()
+                except StopIteration:
+                    if self.code_block:
+                        b = []
+                        self.is_executable = True
+                        is_compilable = True
+                    else:
+                        msg = "No more demo code available. Execute '%{0} [FILES]' to restart\n"
+                        self.write(msg.format(RELOAD_FILES_CMD))
+                        return False
+                else:
+                    try:
+                        is_compilable = code.compile_command("".join(b), "<stdin>", "exec") is not None
+                    except SyntaxError:
+                        is_compilable = False
+                if self.is_executable and is_compilable:
+                    code_to_print = "".join(self.code_block)
+                    if self.color:
+                        try:
+                            # Pygments imports
+                            from pygments import highlight
+                            from pygments.lexers import PythonLexer
+                            from pygments.formatters import Terminal256Formatter
+                            code_to_print = highlight("".join(self.code_block),
+                                                      PythonLexer(),
+                                                      Terminal256Formatter(style=FORMATTER_STYLE))
+                        except ImportError:
+                            pass
+                    print code_to_print
+                    map(super(DemoConsole, self).push, [line[:-1] if line[-1] == "\n" else line for line in self.code_block if line != '\n'])
+                    super(DemoConsole, self).push("\n")
+                    self.code_block = b
+                    self.is_executable = True
+                    return False
+                if self.code_block:
+                    self.code_block.extend(['\n'] * self.blanks)
+                self.code_block.extend(b)
+                self.is_executable = code.compile_command("".join(self.code_block), "<stdin>", "exec") is not None
+            return False
+        elif line.strip().startswith('%' + RELOAD_FILES_CMD) and len(self.buffer) == 0:
+            self.reload_files(line.strip().split(" ")[1:])
+            return False
+        elif line.strip().startswith('%' + PRINT_FILES_CMD) and len(self.buffer) == 0:
+            msg = "Files loaded: {0}\n".format(" ".join(self.files))
+            self.write(msg)
+            return False
+        return super(DemoConsole, self).push(line)
+
+
+class DemoHistoryConsole(HistoryConsole, DemoConsole):
+    pass
+
+
+def clean_block_trail(block):
+    '''Remove last empty as well as last break line of given code block
+    '''
+    while True:
+        if not block[-1].strip():
+            block.pop(-1)
+        else:
+            break
+    block[-1] = block[-1].replace("\n", "")
+    return block
+
+
+def get_code_blocks(files, blanks=1):
+    '''Retrieve a list of code blocks; lists of strings containing lines of code
+    :param files: list of files to read
+    :return list of lists of single line strings
+    '''
+    blocks = []
+    files_count = 0
+    for fil in files:
+        if not path.isfile(fil):
+            break
+        files_count += 1
+        with open(fil) as f:
+            curr_block = []
+            found_blanks = 0
+            for line in f:
+                if not line.strip():
+                    found_blanks += 1
+                    if curr_block and found_blanks == blanks:
+                        blocks.append(clean_block_trail(curr_block))
+                        curr_block = []
+                        found_blanks = 0
+                    elif curr_block:
+                        curr_block.append(line)
+                else:
+                    found_blanks = 0
+                    curr_block.append(line)
+            if curr_block:
+                blocks.append(clean_block_trail(curr_block))
+                curr_block = []
+    return blocks
+
+
+def demo_console(files, blanks, hist, color):
+    '''Launch the demo console infinite input loop
+    '''
+    console = None
+    if hist:
+        try:
+            import readline
+            console = DemoHistoryConsole(files=files, blanks=BLANKS, color=color)
+        except ImportError:
+            pass
+    if console is None:
+        console = DemoConsole(files=files, blanks=BLANKS, color=color)
+    console.interact()
+
+
+def parse_args(in_argv=argv):
+    '''pydemo command line arguments parsing function
+    :param in_argv: incoming argv tuple to be parsed
+    :return tuple with all decoded arguments
+    '''
+    usage = '''USAGE: %prog [--no-history] [--no-color] [--blanks NUM] [FILES]'''
+
+    desc = '''Frappe Context Processor Backend process'''
+
+    parser = OptionParser(usage=usage, version="%prog v0.0.1",
+                          description=desc, prog='pydemo')
+
+    parser.add_option('--blanks', dest='blanks', metavar='NUM',
+                      help='Number of blank lines between each code block',
+                      type='int', default=BLANKS)
+
+    parser.add_option('--no-history', dest='hist',
+                      help='Do not use or store history',
+                      action="store_false", default=True)
+    parser.add_option('--no-color', dest='color',
+                      help='Do not use colorful output',
+                      action="store_false", default=True)
+
+    (opts, args) = parser.parse_args(in_argv)
+    return opts.blanks, opts.hist, opts.color, args[1:]
+
+
+def main():
+    blanks, hist, color, files = parse_args(argv)
+    demo_console(files, blanks, hist, color)
+
+
+if __name__ == '__main__':
+    main()

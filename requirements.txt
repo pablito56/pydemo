@@ -1,0 +1,2 @@
+Pygments==1.6rc1
+readline==6.2.4.1
