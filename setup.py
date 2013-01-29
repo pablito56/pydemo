@@ -15,7 +15,8 @@ setup(
     name="pydemo",
     version="0.0.1",
     description="Python code demonstration console for didactic purposes",
-    long_description="Python code demonstration console for didactic purposes. Prints and executes input files in blocks. Extends code.InteractiveConsole",
+    long_description="Python code demonstration console for didactic purposes. \
+Prints and executes input files in blocks. Extends code.InteractiveConsole",
     author="Pablo Enfedaque",
     author_email='pablito56@gmail.com',
     url="https://github.com/pablito56/pydemo",
