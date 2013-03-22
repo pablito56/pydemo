@@ -6,7 +6,7 @@ Created on Nov 13, 2012
 '''
 # Std lib imports
 from sys import argv
-from os import path
+from os import path, listdir
 import code
 import atexit
 from optparse import OptionParser
@@ -49,7 +49,7 @@ class DemoConsole(code.InteractiveConsole, object):
     def __init__(self, files=None, blanks=BLANKS, color=True, *args, **kargs):
         self.color = color
         if not files:
-            self.files = ["example_{0}.py".format(num) for num in xrange(999)]
+            self.files = sorted([f for f in listdir(".") if f.endswith(".py") and path.isfile(f)])
         else:
             self.files = files
         self.blanks = blanks
@@ -101,7 +101,8 @@ class DemoConsole(code.InteractiveConsole, object):
 
     def reload_files(self, new_files=[]):
         if new_files:
-            self.files = new_files
+            filtered_new_files = filter(path.isfile, new_files)
+            self.files = filtered_new_files if filtered_new_files else self.files
         self.code_block = []
         self.is_executable = False
         self.blocks = self.get_code_blocks()
