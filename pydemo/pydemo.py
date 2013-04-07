@@ -19,6 +19,7 @@ FORMATTER_STYLE = 'emacs'
 #===============================================================================
 RELOAD_FILES_CMD = 'reload_files'
 PRINT_FILES_CMD = 'print_files'
+HELP_CMD = "help"
 BLANKS = 1
 
 
@@ -99,14 +100,19 @@ class DemoConsole(code.InteractiveConsole, object):
                     curr_block = []
         return blocks
 
-    def reload_files(self, new_files=[]):
+    def reload_files(self, new_files=None):
         if new_files:
+            x = ""
+            new_files = map(lambda x: x if x.endswith(".py") else x + ".py", new_files)
             filtered_new_files = filter(path.isfile, new_files)
             self.files = filtered_new_files if filtered_new_files else self.files
         self.code_block = []
         self.is_executable = False
         self.blocks = self.get_code_blocks()
         self.blocks_iter = iter(self.blocks)
+        self.print_loaded_resume()
+
+    def print_loaded_resume(self):
         self.write("Loaded {0} files, {1} code blocks\n".format(len(self.files), len(self.blocks)))
 
     def push(self, line):
@@ -121,7 +127,7 @@ class DemoConsole(code.InteractiveConsole, object):
                         self.is_executable = True
                         is_compilable = True
                     else:
-                        msg = "No more demo code available. Execute '%{0} [FILES]' to restart\n"
+                        msg = "No more demo code available. Execute '%{0} [FILENAMES]' to reload\n"
                         self.write(msg.format(RELOAD_FILES_CMD))
                         return False
                 else:
@@ -158,10 +164,23 @@ class DemoConsole(code.InteractiveConsole, object):
             self.reload_files(line.strip().split(" ")[1:])
             return False
         elif line.strip().startswith('%' + PRINT_FILES_CMD) and len(self.buffer) == 0:
-            msg = "Files loaded: {0}\n".format(" ".join(self.files))
+            self.print_loaded_resume()
+            msg = "In strict order:\n    {0}\n".format("\n    ".join(self.files))
             self.write(msg)
             return False
+        elif line.strip().startswith('%' + HELP_CMD) and len(self.buffer) == 0:
+            self.write(self.get_help())
+            return False
         return super(DemoConsole, self).push(line)
+
+    def get_help(self):
+        '''Return a string with a help message
+        '''
+        help_txt = "pydemo ({}) help:\n\n".format(self.__class__.__name__)
+        help_txt += "    %{:<24} => Reload files. You must provide full or relative path. \
+The extension '.py' is optional.\n\n".format(RELOAD_FILES_CMD + " [FILENAMES]")
+        help_txt += "    %{:<24} => Print currently loaded files.\n\n".format(PRINT_FILES_CMD)
+        return help_txt
 
 
 class DemoHistoryConsole(HistoryConsole, DemoConsole):

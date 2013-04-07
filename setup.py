@@ -13,7 +13,7 @@ def get_requirements():
 
 setup(
     name="pydemo",
-    version="0.0.1",
+    version="0.0.2",
     description="Python code demonstration console for didactic purposes",
     long_description="Python code demonstration console for didactic purposes. \
 Prints and executes input files in blocks. Extends code.InteractiveConsole",
