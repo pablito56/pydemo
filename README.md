@@ -46,9 +46,9 @@ Options:
   --no-color    Do not use colorful output
 ```
 
-  * Use `--blanks=NUM` argument to specify minimum number of empty lines to take between each code block.
-  * Use `--no-history` argument to not load or store the history (you will not be able to browse it inside the CLI).
-  * Use `--no-color` to disable syntax highlight.
+* Use `--blanks=NUM` argument to specify minimum number of empty lines to take between each code block.
+* Use `--no-history` argument to not load or store the history (you will not be able to browse it inside the CLI).
+* Use `--no-color` to disable syntax highlight.
 
 * By default pydemo will take all the `*.py` files in the folder where you launch it, in alphabetical order.
 * When launched it prints a trace with information about files loaded:
