@@ -46,6 +46,10 @@ Options:
   --no-color    Do not use colorful output
 ```
 
+  * Use `--blanks=NUM` argument to specify minimum number of empty lines to take between each code block.
+  * Use `--no-history` argument to not load or store the history (you will not be able to browse it inside the CLI).
+  * Use `--no-color` to disable syntax highlight.
+
 * By default pydemo will take all the `*.py` files in the folder where you launch it, in alphabetical order.
 * When launched it prints a trace with information about files loaded:
 
@@ -72,6 +76,7 @@ In strict order:
 ```
 
 * Each time you input an empty line a new code block is executed. You may interact with that code (e.g. access instances and class and functions declarations):
+
 ```
 $ pydemo tests/test3.py
 Loaded 1 files, 5 code blocks
@@ -110,6 +115,40 @@ print inst.power_attr(4)
 No more demo code available. Execute '%reload_files [FILENAMES]' to reload
 ```
 
+* Use `%reload_files [FILENAMES]` command to reload more files (more code blocks to execute):
+
+```
+$ pydemo tests/test3.py
+Loaded 1 files, 5 code blocks
+Python 2.7.2 (default, Oct 11 2012, 20:14:37)
+[GCC 4.2.1 Compatible Apple Clang 4.0 (tags/Apple/clang-418.0.60)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+(DemoHistoryConsole)
+>>> %reload_files
+Loaded 1 files, 5 code blocks
+>>> %reload_files tests/test2.py
+Loaded 1 files, 7 code blocks
+>>>
+```
+
+* Use `%help` command inside CLI to check the commands:
+
+```
+$ pydemo
+Loaded 1 files, 3 code blocks
+Python 2.7.2 (default, Oct 11 2012, 20:14:37)
+[GCC 4.2.1 Compatible Apple Clang 4.0 (tags/Apple/clang-418.0.60)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+(DemoHistoryConsole)
+>>> %help
+pydemo (DemoHistoryConsole) help:
+
+    %reload_files [FILENAMES] => Reload files. You must provide full or relative path. The extension '.py' is optional.
+
+    %print_files              => Print currently loaded files.
+
+Use exit() or Ctrl-D (i.e. EOF) to exit.
+```
 
 Wishlist
 --------
