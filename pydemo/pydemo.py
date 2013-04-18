@@ -1,9 +1,26 @@
 #! /usr/bin/env python
 #-*- coding: utf-8 -*-
-u'''
+u"""
 Created on Nov 13, 2012
-@author: pev
-'''
+
+@author: pablito56
+
+@license: MIT
+
+@contact: pablito56@gmail.com
+
+Pydemo main module
+"""
+
+
+__author__ = "Pablo Enfedaque"
+__email__ = "pablito56@gmail.com"
+__version__ = "0.0.3"
+__license__ = "MIT"
+__date__ = "2012-11-13"
+__updated__ = "2013-04-18"
+
+
 # Std lib imports
 from sys import argv
 from os import path, listdir
@@ -180,6 +197,7 @@ class DemoConsole(code.InteractiveConsole, object):
         help_txt += "    %{:<24} => Reload files. You must provide full or relative path. \
 The extension '.py' is optional.\n\n".format(RELOAD_FILES_CMD + " [FILENAMES]")
         help_txt += "    %{:<24} => Print currently loaded files.\n\n".format(PRINT_FILES_CMD)
+        help_txt += "Use exit() or Ctrl-D (i.e. EOF) to exit.\n\n".format(PRINT_FILES_CMD)
         return help_txt
 
 

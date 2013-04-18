@@ -1,22 +1,26 @@
 #-*- coding: utf-8 -*-
-u'''pydemo setup.py packaging and distribution script
-'''
+u"""pydemo setup.py packaging and distribution script
+"""
 from setuptools import setup, find_packages
 from itertools import imap
 
 
 def get_requirements():
-    with open('requirements.txt') as reqs_file:
-        reqs = filter(None, imap(lambda line: line.replace('\n', '').strip(), reqs_file))
-        return reqs
+    try:
+        with open('requirements.txt') as reqs_file:
+            reqs = filter(None, imap(lambda line: line.replace('\n', '').strip(), reqs_file))
+            return reqs
+    except IOError:
+        pass
+    return []
 
 
 setup(
     name="pydemo",
-    version="0.0.2",
+    version="0.0.3",
     description="Python code demonstration console for didactic purposes",
     long_description="Python code demonstration console for didactic purposes. \
-Prints and executes input files in blocks. Extends code.InteractiveConsole",
+Prints and executes input files in blocks of lines. Extends code.InteractiveConsole",
     author="Pablo Enfedaque",
     author_email='pablito56@gmail.com',
     url="https://github.com/pablito56/pydemo",

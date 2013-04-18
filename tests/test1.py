@@ -2,9 +2,11 @@
 u'''
 TEST1: Test classes declaration with empty lines
 '''
+
+
 __author__ = "Pablo Enfedaque"
 __email__ = "pablito56@gmail.com"
-__version__ = "0.0.1"
+__version__ = "0.0.3"
 __license__ = "MIT"
 __date__ = "Jan 23, 2013"
 
