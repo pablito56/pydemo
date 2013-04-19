@@ -28,7 +28,7 @@ Requirements
 * To install the package you need **setuptools** or **distribute**. They are already installed from stock in several Linux flavours or in virtualenv, or you can download them from [their PyPi page](https://pypi.python.org/pypi/setuptools#downloads).
 * The installation script will try to install **Pygments** and **readline** as requirements. However, both packages are not mandatory, so you can remove them from the file `requirements.txt` and then proceed with the installation.
   * Let me remind that **readline** has some kind of incompatibilities with `pip`, so you better install it with `easy_install` beforehand.
-* In **Windows** the package will try to install only **pyreadline**, as Pygments does not work right with most usual command lines. You can edit `requirements_win.txt` to add **Pygments** if you use an advanced terminal. 
+* In **Windows** the package will try to install only **pyreadline**, as Pygments does not work right with most usual command lines. If you use an advanced terminal you can edit `requirements_win.txt` to add **Pygments** (before installing). 
 
 
 Usage
