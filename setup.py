@@ -3,11 +3,14 @@ u"""pydemo setup.py packaging and distribution script
 """
 from setuptools import setup, find_packages
 from itertools import imap
+import platform
+import os
 
 
 def get_requirements():
+    reqs_file = 'requirements_win.txt' if platform.system().lower() == "windows" else 'requirements.txt'
     try:
-        with open('requirements.txt') as reqs_file:
+        with open(reqs_file) as reqs_file:
             reqs = filter(None, imap(lambda line: line.replace('\n', '').strip(), reqs_file))
             return reqs
     except IOError:

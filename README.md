@@ -10,7 +10,7 @@ Description
 pydemo provides a command line interpreter which emulates the behavior of the interactive Python interpreter.
 In addition, it can read files Python files and execute them by blocks. The CLI processes all the files and splits them in code blocks.
 A certain number of empty lines in files (1 by default) are used to identify the boundaries between blocks, although they are also validated to verify that they are syntactically correct. In negative case, next lines are added until the accumulated block is right. 
-Each time no text is introduced in the CLI (just pressing *ENTER* key) a new block is executed. It is print (with syntax highlighted if *Pygments* is installed) and then it is evaluated inside the CLI, so that in next command you may use objects instantiated inside the code block.
+Each time no text is introduced in the CLI (just pressing **ENTER** key) a new block is executed. It is print (with syntax highlighted if **Pygments** is installed) and then it is evaluated inside the CLI, so that in next command you may use objects instantiated inside the code block.
 
 
 Installation
@@ -23,11 +23,12 @@ Requirements
 ------------
 
 * pydemo is not compatible with Python 3.X (migration pending):
-  * pydemo uses standard library's *code* and *optparse* modules. The latter is deprecated in Python 2.7 and replaced by *argparse* in Python 3.X.
+  * pydemo uses standard library's **code** and **optparse** modules. The latter is deprecated in Python 2.7 and replaced by **argparse** in Python 3.X.
   * Additional changes may be required related with encoding and how files are read. 
-* To install the package you need *setuptools* or *distribute*. They are already installed from stock in several Linux flavours or in virtualenv.
-* The package will try to install *Pygments* and *readline* as requirements. However, both packages are not mandatory, so you can remove them from the file `requirements.txt` and then proceed with the installation.
-  * Let me remind that *readline* has some kind of incompatibilities with `pip`, so you better install it with `easy_install` beforehand.
+* To install the package you need **setuptools** or **distribute**. They are already installed from stock in several Linux flavours or in virtualenv, or you can download them from [their PyPi page](https://pypi.python.org/pypi/setuptools#downloads).
+* The installation script will try to install **Pygments** and **readline** as requirements. However, both packages are not mandatory, so you can remove them from the file `requirements.txt` and then proceed with the installation.
+  * Let me remind that **readline** has some kind of incompatibilities with `pip`, so you better install it with `easy_install` beforehand.
+* In **Windows** the package will try to install only **pyreadline**, as Pygments does not work right with most usual command lines. You can edit `requirements_win.txt` to add **Pygments** if you use an advanced terminal. 
 
 
 Usage
@@ -77,7 +78,7 @@ In strict order:
 
 * Each time you input an empty line a new code block is executed. You may interact with that code (e.g. access instances and class and functions declarations):
 
-```
+```python
 $ pydemo tests/test3.py
 Loaded 1 files, 5 code blocks
 Python 2.7.2 (default, Oct 11 2012, 20:14:37)
@@ -152,9 +153,10 @@ Use exit() or Ctrl-D (i.e. EOF) to exit.
 
 Wishlist
 --------
-* Support Python 3.X
-* Autocompletion
-* Use a generator to load files incrementally
-* Reload and reprocess files until current point (keep a "cursor")
-* Use *iPython* instead of *code* module
-* Implement web interface
+* [x] Support Windows
+* [ ] Support Python 3.X
+* [ ] Autocompletion
+* [ ] Use a generator to load files incrementally
+* [ ] Reload and reprocess files until current point (keep a "cursor")
+* [ ] Use **iPython** instead of **code** module
+* [ ] Implement web interface
