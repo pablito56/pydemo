@@ -15,14 +15,14 @@ Pydemo main module
 
 __author__ = "Pablo Enfedaque"
 __email__ = "pablito56@gmail.com"
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 __license__ = "MIT"
 __date__ = "2012-11-13"
-__updated__ = "2013-04-18"
+__updated__ = "2013-04-21"
 
 
 # Std lib imports
-from sys import argv
+from sys import argv, path as syspath
 from os import path, listdir
 import code
 import atexit
@@ -72,6 +72,7 @@ class DemoConsole(code.InteractiveConsole, object):
             self.files = files
         self.blanks = blanks
         self.reload_files()
+        syspath.append(path.abspath("."))
         super(DemoConsole, self).__init__(*args, **kargs)
 
     def clean_block_trail(self, block):
