@@ -176,7 +176,13 @@ class DemoConsole(code.InteractiveConsole, object):
                 if self.code_block:
                     self.code_block.extend(['\n'] * self.blanks)
                 self.code_block.extend(b)
-                self.is_executable = code.compile_command("".join(self.code_block), "<stdin>", "exec") is not None
+                try:
+                    self.is_executable = code.compile_command("".join(self.code_block), "<stdin>", "exec") is not None
+                except Exception, e:
+                    import traceback
+                    print "EXCEPTION WHILE TRYING TO COMPILE:"
+                    print "".join(self.code_block)
+                    print traceback.format_exc()
             return False
         elif line.strip().startswith('%' + RELOAD_FILES_CMD) and len(self.buffer) == 0:
             self.reload_files(line.strip().split(" ")[1:])
