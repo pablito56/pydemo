@@ -25,11 +25,12 @@ def get_requirements(replace_readline=False):
         pass
     return []
 
+exceptions = []
 for reqs in (get_requirements(), get_requirements(True)):
     try:
         setup(
             name="pydemo",
-            version="0.0.5",
+            version="0.0.6",
             description="Python code demonstration console for didactic purposes",
             long_description="Python code demonstration console for didactic purposes. \
         Prints and executes input files in blocks of lines. Extends code.InteractiveConsole",
@@ -48,5 +49,10 @@ for reqs in (get_requirements(), get_requirements(True)):
             tests_require="nose",
         )
         break
-    except SystemExit:
+    except SystemExit, e:
         print "\n\tCaught SystemExit. Trying alternative requirements\n"
+        exceptions.append(e)
+else:
+    print "\n\tScript failed. Caught to following SystemExit exceptions:"
+    for e in exceptions:
+        print e
