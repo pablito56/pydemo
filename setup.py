@@ -30,7 +30,7 @@ for reqs in (get_requirements(), get_requirements(True)):
     try:
         setup(
             name="pydemo",
-            version="0.0.6",
+            version="0.0.7",
             description="Python code demonstration console for didactic purposes",
             long_description="Python code demonstration console for didactic purposes. \
         Prints and executes input files in blocks of lines. Extends code.InteractiveConsole",
