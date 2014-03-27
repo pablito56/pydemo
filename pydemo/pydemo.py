@@ -219,11 +219,11 @@ def demo_console(files, blanks, hist, color):
     if hist:
         try:
             import readline
-            console = DemoHistoryConsole(files=files, blanks=BLANKS, color=color)
+            console = DemoHistoryConsole(files=files, blanks=blanks, color=color)
         except ImportError:
             pass
     if console is None:
-        console = DemoConsole(files=files, blanks=BLANKS, color=color)
+        console = DemoConsole(files=files, blanks=blanks, color=color)
     console.interact()
 
 
